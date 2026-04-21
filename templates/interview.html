@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interview — Question {{ q_num }}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:36px;width:100%;max-width:620px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+    .role-badge{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:999px;padding:4px 14px;color:#a78bfa;font-size:0.78rem}
+    .q-badge{color:#a0aec0;font-size:0.82rem}
+    .progress-bg{background:rgba(255,255,255,0.1);border-radius:999px;height:6px;margin-bottom:28px;overflow:hidden}
+    .progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7c3aed,#4f46e5);transition:width 0.4s}
+    .greeting{color:#a0aec0;font-size:0.88rem;margin-bottom:10px}
+    .question{color:#fff;font-size:1.15rem;line-height:1.6;margin-bottom:24px;background:rgba(255,255,255,0.04);border-left:3px solid #7c3aed;padding:16px 18px;border-radius:0 10px 10px 0}
+    label{color:#cbd5e0;font-size:0.82rem;font-weight:600;display:block;margin-bottom:8px}
+    textarea{width:100%;padding:14px 16px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:#fff;font-size:0.92rem;resize:vertical;min-height:140px;outline:none;transition:border 0.2s;font-family:'Segoe UI',sans-serif}
+    textarea::placeholder{color:#718096}
+    textarea:focus{border-color:#7c3aed}
+    .hint{color:#718096;font-size:0.75rem;margin-top:6px}
+    button{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:20px;transition:opacity 0.2s}
+    button:hover{opacity:0.9}
+    .tip{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:10px 14px;color:#fbbf24;font-size:0.78rem;margin-top:14px}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="top">
+    <span class="role-badge">{{ role }}</span>
+    <span class="q-badge">Question {{ q_num }} of {{ total }}</span>
+  </div>
+
+  <div class="progress-bg">
+    <div class="progress-fill" style="width:{{ ((q_num-1)/total*100)|round }}%"></div>
+  </div>
+
+  <p class="greeting">Hi {{ name }}! Here's your question:</p>
+
+  <div class="question">{{ question }}</div>
+
+  <form action="/evaluate" method="POST">
+    <label>Your Answer</label>
+    <textarea name="answer" placeholder="Type your answer here... Take your time, be specific and use examples from your experience." required></textarea>
+    <div class="hint">💡 Tip: Use the STAR method (Situation, Task, Action, Result) for behavioral questions.</div>
+    <button type="submit">Submit Answer →</button>
+  </form>
+
+  <div class="tip">⏱️ Take your time — there's no time limit. Focus on quality over speed.</div>
+</div>
+</body>
+</html>

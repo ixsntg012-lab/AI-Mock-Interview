@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feedback — Question {{ q_num }}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);min-height:100vh;padding:30px 20px}
+    .container{max-width:640px;margin:0 auto}
+    .card{background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;margin-bottom:16px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .role-badge{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:999px;padding:4px 14px;color:#a78bfa;font-size:0.78rem}
+    h2{color:#fff;font-size:1.1rem;margin-bottom:10px}
+    .question-box{color:#e2e8f0;font-size:0.92rem;line-height:1.5;background:rgba(255,255,255,0.04);border-left:3px solid #7c3aed;padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:16px}
+    .answer-box{color:#a0aec0;font-size:0.88rem;line-height:1.5;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:12px 16px;border-radius:8px}
+
+    /* Score */
+    .score-row{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+    .score-circle{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;flex-shrink:0}
+    .score-high{background:rgba(52,211,153,0.15);border:2px solid #34d399;color:#34d399}
+    .score-mid{background:rgba(251,191,36,0.15);border:2px solid #fbbf24;color:#fbbf24}
+    .score-low{background:rgba(252,129,129,0.15);border:2px solid #fc8181;color:#fc8181}
+    .feedback-text{color:#e2e8f0;font-size:0.88rem;line-height:1.6}
+
+    /* Strengths / Improvements */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .col-title{font-size:0.78rem;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
+    .green{color:#34d399}.orange{color:#fbbf24}
+    ul{list-style:none}
+    ul li{font-size:0.82rem;color:#a0aec0;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);line-height:1.4}
+    ul li:last-child{border:none}
+    ul li::before{content:"• ";color:inherit}
+
+    /* Sample */
+    .sample-box{background:rgba(79,70,229,0.1);border:1px solid rgba(79,70,229,0.3);border-radius:10px;padding:12px 16px}
+    .sample-box p{color:#a0aec0;font-size:0.78rem;margin-bottom:4px}
+    .sample-box span{color:#c7d2fe;font-size:0.85rem;line-height:1.5}
+
+    /* Next */
+    .next-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px;margin-bottom:16px}
+    .next-label{color:#a0aec0;font-size:0.78rem;margin-bottom:8px}
+    .next-q{color:#fff;font-size:1rem;line-height:1.5;margin-bottom:16px}
+
+    button,a.btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;transition:opacity 0.2s}
+    button:hover,a.btn:hover{opacity:0.9}
+    .btn-results{background:linear-gradient(135deg,#059669,#047857)}
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="card">
+    <div class="top">
+      <span class="role-badge">{{ role }}</span>
+      <span style="color:#a0aec0;font-size:0.82rem">Q{{ q_num }} of {{ total }}</span>
+    </div>
+
+    <h2>Question</h2>
+    <div class="question-box">{{ question }}</div>
+
+    <h2>Your Answer</h2>
+    <div class="answer-box">{{ answer if answer else "No answer provided." }}</div>
+  </div>
+
+  <!-- Score + Feedback -->
+  <div class="card">
+    {% set score = result.score %}
+    <div class="score-row">
+      <div class="score-circle {% if score >= 7 %}score-high{% elif score >= 4 %}score-mid{% else %}score-low{% endif %}">
+        {{ score }}/10
+      </div>
+      <p class="feedback-text">{{ result.feedback }}</p>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <p class="col-title green">✅ Strengths</p>
+        <ul>
+          {% for s in result.strengths %}
+          <li class="green">{{ s }}</li>
+          {% else %}
+          <li style="color:#718096">—</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <p class="col-title orange">⚠️ Improve</p>
+        <ul>
+          {% for i in result.improvements %}
+          <li class="orange">{{ i }}</li>
+          {% else %}
+          <li style="color:#718096">—</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    {% if result.sample %}
+    <div class="sample-box">
+      <p>💡 A strong answer would include:</p>
+      <span>{{ result.sample }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Next question or results -->
+  {% if is_last %}
+  <div class="card" style="text-align:center">
+    <p style="color:#a0aec0;margin-bottom:16px">🎉 Interview complete! See your full results.</p>
+    <a href="/results" class="btn btn-results">View Final Results →</a>
+  </div>
+  {% else %}
+  <div class="next-card">
+    <p class="next-label">Next Question ({{ next_q_num }} of {{ total }})</p>
+    <p class="next-q">{{ next_question }}</p>
+    <form action="/next_question" method="POST">
+      <input type="hidden" name="next" value="true"/>
+      <button type="submit" class="btn">Answer Next Question →</button>
+    </form>
+  </div>
+  {% endif %}
+
+</div>
+</body>
+</html>
