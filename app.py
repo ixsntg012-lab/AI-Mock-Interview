@@ -13,7 +13,8 @@ app = Flask(__name__)
 app.secret_key = "mock_interview_2026_xyz"
 
 # ── Gemini Setup ──────────────────────────────────────────────────────────
-GEMINI_API_KEY = "AIzaSyDdgB7mzfvIF8IjN_t9n9qpfTbPoMSwci4"   # ← నీ key ఇక్కడ పెట్టు
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
 genai.configure(api_key=GEMINI_API_KEY)
 gemini = genai.GenerativeModel("models/gemini-3.1-flash-lite-preview")
 
